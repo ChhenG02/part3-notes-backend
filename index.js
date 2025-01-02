@@ -53,6 +53,11 @@ app.post('/api/persons', (req, res) => {
     return res.status(400).send({ error: 'Name or number missing' });
   }
 
+   // Check if the name already exists in the phonebook
+   if (persons.some(person => person.name === name)) {
+    return res.status(400).send({ error: 'name must be unique' });
+  }
+
   // Generate a random id
   const id = Math.floor(Math.random() * 1000000).toString(); 
 
