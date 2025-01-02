@@ -1,12 +1,16 @@
 const express = require('express');
 const app = express();
 
-const persons = [
+let persons = [
   { id: "1", name: "Arto Hellas", number: "040-123456" },
   { id: "2", name: "Ada Lovelace", number: "39-44-5323523" },
   { id: "3", name: "Dan Abramov", number: "12-43-234345" },
   { id: "4", name: "Mary Poppendieck", number: "39-23-6423122" },
 ];
+
+// Middleware to parse JSON bodies
+app.use(express.json());
+
 
 // GET persons
 app.get('/api/persons', (req, res) => {
@@ -27,6 +31,18 @@ app.get('/api/persons/:id', (req, res) => {
   }
 });
 
+// DELETE a single person by id
+app.delete('/api/persons/:id', (req, res) => {
+  const id = req.params.id;
+  const initialLength = persons.length;
+  persons = persons.filter(p => p.id !== id);
+
+  if (persons.length < initialLength) {
+    res.status(204).end(); 
+  } else {
+    res.status(404).send({ error: 'Person not found' }); 
+  }
+});
 
 // GET info
 app.get('/info', (req, res) => {
