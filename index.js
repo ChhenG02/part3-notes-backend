@@ -44,6 +44,24 @@ app.delete('/api/persons/:id', (req, res) => {
   }
 });
 
+// Post a new person
+app.post('/api/persons', (req, res) => {
+  const { name, number } = req.body;
+
+  // Check if name or number is missing
+  if (!name || !number) {
+    return res.status(400).send({ error: 'Name or number missing' });
+  }
+
+  // Generate a random id
+  const id = Math.floor(Math.random() * 1000000).toString(); 
+
+  const newPerson = { id, name, number };
+  persons.push(newPerson);
+
+  res.status(201).json(newPerson);
+});
+
 // GET info
 app.get('/info', (req, res) => {
   const currentTime = new Date();
