@@ -1,4 +1,5 @@
 const express = require('express');
+const morgan = require('morgan');
 const app = express();
 
 let persons = [
@@ -10,7 +11,8 @@ let persons = [
 
 // Middleware to parse JSON bodies
 app.use(express.json());
-
+// minimal output.
+app.use(morgan('tiny')); 
 
 // GET persons
 app.get('/api/persons', (req, res) => {
