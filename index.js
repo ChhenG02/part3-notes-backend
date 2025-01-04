@@ -11,8 +11,26 @@ let persons = [
 
 // Middleware to parse JSON bodies
 app.use(express.json());
-// minimal output.
-app.use(morgan('tiny')); 
+
+// RequstLogger Middleware
+morgan.token('body', (req) => JSON.stringify(req.body)); 
+app.use(
+  morgan((tokens, req, res) => {
+    const logMessage = [
+      tokens.method(req, res),
+      tokens.url(req, res),
+      tokens.status(req, res),
+      tokens.res(req, res, 'content-length'), '-',
+      tokens['response-time'](req, res), 'ms',
+    ].join(' ');
+
+    // **Include request body for POST and PUT**
+    if (req.method === 'POST' || req.method === 'PUT') {
+      return `${logMessage} ${tokens.body(req, res)}`;
+    }
+    return logMessage;
+  })
+);
 
 // GET persons
 app.get('/api/persons', (req, res) => {
@@ -78,6 +96,10 @@ app.get('/info', (req, res) => {
   `;
   res.send(info);
 });
+
+// Middleware for 404 Errors
+app.use((req, res) => res.status(404).send({ error: 'unknown endpoint' })); 
+
 
 const PORT = 3001;
 app.listen(PORT, () => {
