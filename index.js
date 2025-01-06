@@ -2,6 +2,9 @@ const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
 const app = express();
+const distPath = path.join(__dirname, 'dist');
+app.use(express.static(distPath));
+
 
 // app.use(cors());
 app.use(cors({
@@ -107,6 +110,12 @@ app.get('/info', (req, res) => {
 
 // Middleware for 404 Errors
 app.use((req, res) => res.status(404).send({ error: 'unknown endpoint' })); 
+
+
+// Middleware for handling frontend routing
+app.get('*', (req, res) => {
+  res.sendFile(path.join(distPath, 'index.html'));
+});
 
 
 const PORT = 3001;
