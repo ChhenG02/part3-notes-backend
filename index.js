@@ -1,6 +1,14 @@
 const express = require('express');
 const morgan = require('morgan');
+const cors = require('cors');
 const app = express();
+
+// app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:5173',
+}));
+
+
 
 let persons = [
   { id: "1", name: "Arto Hellas", number: "040-123456" },
